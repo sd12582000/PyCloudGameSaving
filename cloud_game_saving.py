@@ -48,17 +48,16 @@ def main():
     script_path = os.path.abspath(os.path.dirname(__file__))
     os.chdir(script_path)
 
-    if len(sys.argv) != 2:
+    if len(sys.argv) < 2:
         print("No launch target")
         os.system("pause")
         return
 
     is_steam_game = False
-    launch_target = sys.argv[1]
-    config_name = sys.argv[1]
+    launch_target = ' '.join(sys.argv[1:])
+    config_name = launch_target
     wait_second = 30
     token = sys.argv[1].split('/')
-
     if token[0] == 'steam:':
         config_name = token[len(token)-1]
         is_steam_game = True
@@ -97,7 +96,10 @@ def main():
             print("waiting game ({}) terminate".format(pid))
             steam_helper.wait_game_terminate(pid)
     else:
-        subprocess.call(["start", "", "/B", "/WAIT", launch_target], shell=True)
+        commad_list = ["start", "", "/B", "/WAIT"]
+        for parm in sys.argv[1:]:
+            commad_list.append(parm)
+        subprocess.call(commad_list, shell=True)
 
     repository_controller.exit_game()
     commit_message = "{0:%Y-%m-%d %H:%M:%S}".format(datetime.datetime.now())
