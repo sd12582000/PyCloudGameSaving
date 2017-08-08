@@ -17,7 +17,7 @@ def get_stream_game_title(appid):
         return json_data['data']['name']
     return appid
 
-def find_launch_game_pid():
+def find_current_steam_game_pid():
     """
     find current play game process id with GameOverlayUI.exe
     if not find return -1
@@ -36,21 +36,14 @@ def find_launch_game_pid():
             print("Permission error or access denied on process")
     return target_pid
 
-def wait_game_terminate(pid):
-    """
-    process waiting
-    """
-    game_process = psutil.Process(pid)
-    game_process.wait()
-    print("game terminate")
-
 def main():
     """
     test
     """
-    target_pid = find_launch_game_pid()
+    target_pid = find_current_steam_game_pid()
     if target_pid != -1:
-        wait_game_terminate(target_pid)
+        from . import process_helper 
+        process_helper.wait_game_terminate(target_pid)
     else:
         print("no game start")
 
