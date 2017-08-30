@@ -36,20 +36,50 @@ def call_git_remote_add(dir_path, remote_url, repo_name="origin"):
     return subprocess.call(["git", "-C", dir_path
                             , "remote", "add", repo_name, remote_url], shell=True)
 
-def call_git_pull(dir_path, remote="origin", branch="master"):
+def call_git_clone_inplace(dir_path, remote_url):
+    """
+    run git clone remote_url .
+    """
+    return subprocess.call(["git", "-C", dir_path
+                            , "clone", remote_url, '.'], shell=True)
+
+
+def call_git_pull(dir_path, remote="origin", branch="master", force=False):
     """
     run git pull remote branch
     """
-    return subprocess.call(["git", "-C", dir_path
-                            , "pull", remote, branch], shell=True)
+    result = -1
+    if force:
+        result = subprocess.call(["git", "-C", dir_path
+                                  , "pull", '-f', remote, branch], shell=True)
+    else:
+        result = subprocess.call(["git", "-C", dir_path
+                                  , "pull", remote, branch], shell=True)
+    return result
 
-def call_git_push(dir_path, remote="origin", branch="master"):
+def call_git_push(dir_path, remote="origin", branch="master", force=False):
     """
     run git push remote branch
     """
-    return subprocess.call(["git", "-C", dir_path
-                            , "push", remote, branch], shell=True)
+    result = -1
+    if force:
+        result = subprocess.call(["git", "-C", dir_path
+                                  , "push", '-f', remote, branch], shell=True)
+    else:
+        result = subprocess.call(["git", "-C", dir_path
+                                  , "push", remote, branch], shell=True)
+    return result
 
+def call_git_clean(dir_path, force=False):
+    """
+    run git clean [-f -d]
+    """
+    result = -1
+    if force:
+        result = subprocess.call(["git", "-C", dir_path, "clean", '-f', '-d'], shell=True)
+    else:
+        result = subprocess.call(["git", "-C", dir_path, "clean"], shell=True)
+    return result
 
 def call_git_commit(dir_path, commit_message):
     """
