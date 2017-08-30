@@ -29,21 +29,21 @@ def call_git_add_all(dir_path):
     """
     return subprocess.call(["git", "-C", dir_path, "add", "."], shell=True)
 
-def git_remote_add(dir_path, remote_url, repo_name="origin"):
+def call_git_remote_add(dir_path, remote_url, repo_name="origin"):
     """
     run git remote add repo_name remote_url
     """
     return subprocess.call(["git", "-C", dir_path
                             , "remote", "add", repo_name, remote_url], shell=True)
 
-def git_pull(dir_path, remote="origin", branch="master"):
+def call_git_pull(dir_path, remote="origin", branch="master"):
     """
     run git pull remote branch
     """
     return subprocess.call(["git", "-C", dir_path
                             , "pull", remote, branch], shell=True)
 
-def git_push(dir_path, remote="origin", branch="master"):
+def call_git_push(dir_path, remote="origin", branch="master"):
     """
     run git push remote branch
     """
@@ -63,7 +63,7 @@ def main():
     """
     import datetime
     dir_path = "D:\\git\\testGit"
-    status_code = git_push(dir_path)
+    status_code = call_git_push(dir_path)
     print(status_code)
     if status_code != 0:
         print("not code")
