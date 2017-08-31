@@ -11,9 +11,11 @@ class RemoteRepository(LocalRepository):
         """
         init
         """
+        import platform
         self.config = config
         self.repo_path = config['save_dir']
         self.repo_url = config['RepositoryUrl']
+        self.use_shell = True if platform.system() == 'Windows' else False
 
     def before_launch_game(self):
         """
@@ -25,10 +27,10 @@ class RemoteRepository(LocalRepository):
         """
         super(RemoteRepository, self).before_launch_game()
 
-        if git_helper.call_git_pull(self.repo_path) != 0:
-            git_helper.call_git_remote_add(self.repo_path, self.repo_url)
-            git_helper.call_git_clean(self.repo_path, force=True)
-            git_helper.call_git_pull(self.repo_path, force=True)
+        if git_helper.call_git_pull(self.repo_path, shell=self.use_shell) != 0:
+            git_helper.call_git_remote_add(self.repo_path, self.repo_url, shell=self.use_shell)
+            git_helper.call_git_clean(self.repo_path, force=True, shell=self.use_shell)
+            git_helper.call_git_pull(self.repo_path, force=True, shell=self.use_shell)
         print("=== RemoteRepository launch_game ===")
 
     def exit_game(self):
@@ -47,7 +49,7 @@ class RemoteRepository(LocalRepository):
         git push
         """
         super(RemoteRepository, self).backup_save(commit_message)
-        git_helper.call_git_push(self.repo_path)
+        git_helper.call_git_push(self.repo_path, shell=self.use_shell)
 
         print("=== RemoteRepository backup_save ===")
 

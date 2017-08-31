@@ -11,8 +11,10 @@ class LocalRepository(Repository):
         """
         init
         """
+        import platform
         self.config = config
         self.repo_path = config['save_dir']
+        self.use_shell = True if platform.system() == 'Windows' else False
 
     def before_launch_game(self):
         """
@@ -20,8 +22,8 @@ class LocalRepository(Repository):
         check Repository status
         create Repository
         """
-        if git_helper.call_git_status(self.repo_path) != 0:
-            git_helper.call_git_init(self.repo_path)
+        if git_helper.call_git_status(self.repo_path, shell=self.use_shell) != 0:
+            git_helper.call_git_init(self.repo_path, shell=self.use_shell)
         print("=== LocalRepository launch_game ===")
 
     def exit_game(self):
@@ -36,8 +38,8 @@ class LocalRepository(Repository):
         git add .
         git commit -m commit_message
         """
-        git_helper.call_git_add_all(self.repo_path)
-        git_helper.call_git_commit(self.repo_path, commit_message)
+        git_helper.call_git_add_all(self.repo_path, shell=self.use_shell)
+        git_helper.call_git_commit(self.repo_path, commit_message, shell=self.use_shell)
 
         print("=== LocalRepository backup_save ===")
 

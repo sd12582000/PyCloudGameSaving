@@ -27,6 +27,12 @@ def creat_config(config_name):
     #config = LocalRepository.create_config(config_name)
     return config
 
+def pause():
+    """
+    just simulate os.system("pause")
+    """
+    input("Press any key to continue")
+
 def clear_file_name(config_name):
     """
     remove illegal char
@@ -36,22 +42,31 @@ def clear_file_name(config_name):
         config_name = config_name.replace(ecr, '_')
     return config_name
 
-def run_game(launch_target,is_steam_game=False):
+def run_game(launch_target, is_steam_game=False):
+    """
+    start gane
+    """
     import subprocess
+    import platform
     if is_steam_game:
+        #no for mac
         subprocess.call(["start", launch_target], shell=True)
     else:
-        commad_list = ["start", "", "/B", "/WAIT"]
+        commad_list = []
+        use_shell = False
+        if platform.system() == 'Windows':
+            commad_list = ["start", "", "/B", "/WAIT"]
+            use_shell = True
+
         for parm in sys.argv[1:]:
             commad_list.append(parm)
-        subprocess.call(commad_list, shell=True)
+        subprocess.call(commad_list, shell=use_shell)
 
 def main():
     """
     enter point
     """
     import os
-    import subprocess
     import datetime
 
     #change dir for save config
@@ -120,7 +135,7 @@ def main():
     repository_controller.exit_game()
     commit_message = "{0:%Y-%m-%d %H:%M:%S}".format(datetime.datetime.now())
     repository_controller.backup_save(commit_message)
-    os.system("pause")
+    pause()
 
 if __name__ == "__main__":
     main()
